@@ -2,117 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Simulation | Sai Naveen 059</title>
+    <title>sai_naveen_059 | Simulator</title>
     <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: -apple-system, sans-serif;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .post-container {
-            width: 100%;
-            max-width: 500px;
-            background: #121212;
-            border: 1px solid #262626;
-            border-radius: 8px;
-            padding: 20px;
-        }
-        .header { display: flex; align-items: center; margin-bottom: 20px; }
-        .mini-avatar {
-            width: 32px; height: 32px;
-            background: linear-gradient(45deg, #f09433, #bc1888);
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        h2 { font-size: 14px; margin: 0; }
-        input {
-            width: 100%;
-            background: #000;
-            border: 1px solid #363636;
-            color: #fff;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            background: #0095f6;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .dfa-output {
-            margin-top: 20px;
-            border-top: 1px solid #262626;
-            padding-top: 15px;
-        }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th { text-align: left; color: #a8a8a8; padding: 8px; border-bottom: 1px solid #262626; }
-        td { padding: 8px; border-bottom: 1px solid #1a1a1a; }
-        .highlight { color: #0095f6; font-weight: bold; }
+        :root { --border: #262626; --blue: #0095f6; --text: #fafafa; }
+        body { background: #000; color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding: 40px 20px; display: flex; justify-content: center; }
+        .post { width: 100%; max-width: 500px; background: #121212; border: 1px solid var(--border); border-radius: 10px; }
+        .header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+        .user-dot { width: 30px; height: 30px; background: linear-gradient(45deg, #f09433, #bc1888); border-radius: 50%; margin-right: 12px; }
+        .content { padding: 20px; }
+        label { display: block; font-size: 11px; color: #8e8e8e; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; }
+        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; }
+        button { width: 100%; background: var(--blue); color: #fff; border: none; padding: 10px; border-radius: 5px; font-weight: 700; cursor: pointer; }
+        .output-box { margin-top: 25px; border-top: 1px dotted var(--border); padding-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th { text-align: left; color: #8e8e8e; padding: 10px; border-bottom: 1px solid var(--border); font-size: 12px; }
+        td { padding: 12px 10px; border-bottom: 1px solid #1a1a1a; font-family: monospace; }
+        .new-state { color: var(--blue); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="post-container">
+<div class="post">
     <div class="header">
-        <div class="mini-avatar"></div>
-        <div>
-            <h2>sai_naveen_059</h2>
-            <div style="font-size: 12px; color: #a8a8a8;">Subset Construction Algorithm</div>
-        </div>
+        <div class="user-dot"></div>
+        <div style="font-size: 14px; font-weight: 600;">sai_naveen_059 <span style="font-weight: 400; color: #8e8e8e;">• Simulation</span></div>
     </div>
+    <div class="content">
+        <label>NFA Transitions (From,Sym,To; ...)</label>
+        <input type="text" id="nfaIn" value="q0,0,q0; q0,0,q1; q1,1,q1" placeholder="e.g., q0,0,q0; q0,0,q1">
+        
+        <label>Alphabet (e.g., 0,1)</label>
+        <input type="text" id="alphabetIn" value="0,1">
 
-    <label style="font-size: 12px; color: #a8a8a8;">NFA Transitions (From,Sym,To; ...)</label>
-    <input type="text" id="nfaInput" placeholder="q0,a,q1; q1,b,q2; q0,a,q0">
-    
-    <label style="font-size: 12px; color: #a8a8a8;">Start State</label>
-    <input type="text" id="startState" placeholder="q0">
+        <button onclick="runSubsetConstruction()">Generate DFA Table</button>
 
-    <button onclick="generateDFA()">Run Simulation</button>
-
-    <div class="dfa-output" id="output">
-        <p style="font-size: 13px;">Generated DFA Mapping:</p>
-        <table id="dfaTable">
-            <thead>
-                <tr>
-                    <th>DFA State</th>
-                    <th>Input</th>
-                    <th>Next State</th>
-                </tr>
-            </thead>
-            <tbody id="dfaBody"></tbody>
-        </table>
+        <div class="output-box" id="output">
+            <p style="font-size: 14px; font-weight: 600;">DFA Transition Table</p>
+            <table>
+                <thead>
+                    <tr><th>DFA State</th><th>Input</th><th>Next State</th></tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-    function generateDFA() {
-        const input = document.getElementById('nfaInput').value;
-        const dfaBody = document.getElementById('dfaBody');
-        dfaBody.innerHTML = "";
+    function runSubsetConstruction() {
+        const alphabet = document.getElementById('alphabetIn').value.split(',');
+        const transitions = document.getElementById('nfaIn').value.split(';');
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = "";
 
-        const transitions = input.split(';');
-        
-        // Logic to simulate the mapping of NFA subsets to DFA transitions
-        transitions.forEach(trans => {
-            const part = trans.trim().split(',');
-            if(part.length === 3) {
-                const row = `<tr>
-                    <td class="highlight">{${part[0]}}</td>
-                    <td>${part[1]}</td>
-                    <td>{${part[2]}}</td>
-                </tr>`;
-                dfaBody.innerHTML += row;
-            }
+        // Core logic to group NFA targets for same inputs
+        let mapping = {};
+        transitions.forEach(t => {
+            const [from, sym, to] = t.trim().split(',');
+            const key = `${from}-${sym}`;
+            if (!mapping[key]) mapping[key] = new Set();
+            mapping[key].add(to);
         });
+
+        for (let key in mapping) {
+            const [state, sym] = key.split('-');
+            const targets = Array.from(mapping[key]).join(',');
+            const row = `<tr>
+                <td>{${state}}</td>
+                <td><span style="color:#ffcc00">${sym}</span></td>
+                <td class="new-state">{${targets}}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        }
     }
 </script>
 
