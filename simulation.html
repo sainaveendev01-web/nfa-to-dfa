@@ -2,134 +2,121 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>sai_naveen_059 | Workflow Simulation</title>
+    <title>sai_naveen_059 | Working Simulation</title>
     <style>
-        :root { --insta-blue: #0095f6; --bg: #000; --card: #121212; --border: #262626; }
-        body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; padding: 20px; line-height: 1.6; }
-        .container { max-width: 600px; margin: auto; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 25px; }
-        .user-header { display: flex; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .avatar { width: 40px; height: 40px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-radius: 50%; margin-right: 15px; }
-        h2 { font-size: 16px; margin: 0; }
+        :root { --insta-blue: #0095f6; --bg: #000; --card: #121212; --border: #262626; --accent: #ff3040; }
+        body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; padding: 20px; }
+        .insta-post { max-width: 500px; margin: auto; background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+        .header { padding: 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+        .avatar { width: 32px; height: 32px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-radius: 50%; margin-right: 12px; }
+        .content { padding: 20px; }
         
-        .input-section label { font-size: 11px; color: #8e8e8e; text-transform: uppercase; font-weight: 700; display: block; margin-top: 15px; }
-        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 5px; box-sizing: border-box; }
-        button { width: 100%; background: var(--insta-blue); color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; }
-        button:hover { opacity: 0.8; }
-
-        .workflow-log { margin-top: 30px; background: #000; padding: 15px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 13px; color: #00ff41; height: 250px; overflow-y: auto; border: 1px solid #333; }
-        .table-area { margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th { text-align: left; color: #8e8e8e; border-bottom: 1px solid var(--border); padding: 10px; font-size: 11px; }
+        label { font-size: 11px; color: #8e8e8e; text-transform: uppercase; font-weight: 700; display: block; margin-top: 15px; }
+        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 8px; margin-top: 5px; box-sizing: border-box; font-family: monospace; }
+        button { width: 100%; background: var(--insta-blue); color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 20px; }
+        
+        #console { background: #050505; color: #00ff41; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px; margin-top: 20px; height: 150px; overflow-y: auto; border: 1px solid #1a1a1a; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }
+        th { text-align: left; color: #8e8e8e; border-bottom: 1px solid var(--border); padding: 10px; }
         td { padding: 10px; border-bottom: 1px solid #1a1a1a; }
-        .state { color: #fb923c; font-weight: bold; }
+        .state-text { color: var(--insta-blue); font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="user-header">
+<div class="insta-post">
+    <div class="header">
         <div class="avatar"></div>
-        <div>
-            <h2>sai_naveen_059</h2>
-            <div style="font-size: 12px; color: #8e8e8e;">Subset Construction Workflow</div>
-        </div>
+        <div style="font-size: 14px; font-weight: 600;">sai_naveen_059 <span style="font-weight:400; color:#8e8e8e;">• Algorithm</span></div>
     </div>
+    
+    <div class="content">
+        <label>1. States (e.g., q0,q1)</label>
+        <input type="text" id="states" value="q0,q1">
 
-    <div class="input-section">
-        <label>1. Define Alphabet (e.g., 0,1)</label>
+        <label>2. Alphabet (e.g., 0,1)</label>
         <input type="text" id="alphabet" value="0,1">
 
-        <label>2. NFA Transitions (From,Sym,To; ...)</label>
-        <input type="text" id="transitions" value="q0,0,q0; q0,0,q1; q1,1,q1">
+        <label>3. Transitions (from,sym,to; from,sym,to)</label>
+        <input type="text" id="trans" value="q0,0,q0;q0,0,q1;q1,1,q1">
 
-        <label>3. Start State</label>
-        <input type="text" id="start" value="q0">
-    </div>
+        <button onclick="runSubsetConstruction()">Convert NFA to DFA</button>
 
-    <button onclick="startWorkflow()">Run Conversion Workflow</button>
+        <div id="console">System Ready... Waiting for input.</div>
 
-    <div class="workflow-log" id="log">Logs will appear here...</div>
-
-    <div class="table-area">
-        <table id="dfaTable">
+        <table id="resultTable">
             <thead>
-                <tr><th>DFA State (Set)</th><th>Input</th><th>Result (Set)</th></tr>
+                <tr><th>DFA Subset State</th><th>Input</th><th>Next Subset State</th></tr>
             </thead>
-            <tbody id="tableBody"></tbody>
+            <tbody id="resBody"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-function startWorkflow() {
-    const log = document.getElementById('log');
-    const tableBody = document.getElementById('tableBody');
+function runSubsetConstruction() {
+    const states = document.getElementById('states').value.split(',').map(s => s.trim());
     const alphabet = document.getElementById('alphabet').value.split(',').map(s => s.trim());
-    const transRaw = document.getElementById('transitions').value.split(';');
-    const startNode = document.getElementById('start').value.trim();
+    const transRaw = document.getElementById('trans').value.split(';').map(s => s.trim());
+    const consoleLog = document.getElementById('console');
+    const tableBody = document.getElementById('resBody');
 
-    log.innerHTML = "Initializing workflow for Sai Naveen 059...<br>";
+    consoleLog.innerHTML = "Initializing Sai Naveen's Engine...<br>";
     tableBody.innerHTML = "";
 
-    // Parse Transitions into a Map
+    // Step 1: Map NFA Transitions
     let nfa = {};
     transRaw.forEach(t => {
-        let [from, sym, to] = t.split(',').map(s => s.trim());
+        let [from, sym, to] = t.split(',');
         if (!nfa[from]) nfa[from] = {};
         if (!nfa[from][sym]) nfa[from][sym] = [];
         nfa[from][sym].push(to);
     });
 
-    // DFA Construction logic
-    let dfaStates = [];
-    let queue = [[startNode]];
+    // Step 2: Subset Construction Logic
+    let startState = [states[0]]; 
+    let queue = [startState];
     let visited = [];
 
-    function stateToName(stateArr) {
-        return "{" + stateArr.sort().join(',') + "}";
-    }
-
-    log.innerHTML += "> Start state: " + stateToName([startNode]) + "<br>";
+    function getName(arr) { return arr.length > 0 ? "{" + arr.sort().join(',') + "}" : "Φ"; }
 
     while (queue.length > 0) {
-        let currentSubset = queue.shift();
-        let currentName = stateToName(currentSubset);
+        let currentArr = queue.shift();
+        let currentName = getName(currentArr);
 
         if (visited.includes(currentName)) continue;
         visited.push(currentName);
-        log.innerHTML += `> Processing State: ${currentName}<br>`;
+
+        consoleLog.innerHTML += `> Exploring ${currentName}...<br>`;
 
         alphabet.forEach(symbol => {
-            let nextSubset = new Set();
-            currentSubset.forEach(nfaState => {
-                if (nfa[nfaState] && nfa[nfaState][symbol]) {
-                    nfa[nfaState][symbol].forEach(s => nextSubset.add(s));
+            let nextStatesSet = new Set();
+            
+            // For every NFA state in the current DFA subset, find targets
+            currentArr.forEach(s => {
+                if (nfa[s] && nfa[s][symbol]) {
+                    nfa[s][symbol].forEach(target => nextStatesSet.add(target));
                 }
             });
 
-            if (nextSubset.size > 0) {
-                let nextArr = Array.from(nextSubset);
-                let nextName = stateToName(nextArr);
-                
-                log.innerHTML += `&nbsp;&nbsp;&nbsp;On input '${symbol}' -> ${nextName}<br>`;
-                
-                // Add to result table
-                tableBody.innerHTML += `<tr>
-                    <td class="state">${currentName}</td>
-                    <td>${symbol}</td>
-                    <td class="state">${nextName}</td>
-                </tr>`;
+            let nextArr = Array.from(nextStatesSet).sort();
+            let nextName = getName(nextArr);
 
-                if (!visited.includes(nextName)) {
-                    queue.push(nextArr);
-                }
-            } else {
-                // Trap state logic
-                tableBody.innerHTML += `<tr><td>${currentName}</td><td>${symbol}</td><td>{∅}</td></tr>`;
+            // Update Table
+            tableBody.innerHTML += `<tr>
+                <td class="state-text">${currentName}</td>
+                <td style="color:#f09433">${symbol}</td>
+                <td class="state-text">${nextName}</td>
+            </tr>`;
+
+            if (!visited.includes(nextName) && nextName !== "Φ") {
+                queue.push(nextArr);
+                consoleLog.innerHTML += `&nbsp;&nbsp;Found new state: ${nextName}<br>`;
             }
         });
     }
-    log.innerHTML += "<strong>Workflow Complete!</strong>";
+    consoleLog.innerHTML += "<strong>Success: DFA Generated!</strong>";
 }
 </script>
 
