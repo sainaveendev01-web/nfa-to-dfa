@@ -2,80 +2,103 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>sai_naveen_059 | Simulator</title>
+    <title>DFA Simulator | Sai Naveen 059</title>
     <style>
-        :root { --border: #262626; --blue: #0095f6; --text: #fafafa; }
-        body { background: #000; color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding: 40px 20px; display: flex; justify-content: center; }
-        .post { width: 100%; max-width: 500px; background: #121212; border: 1px solid var(--border); border-radius: 10px; }
-        .header { padding: 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; }
-        .user-dot { width: 30px; height: 30px; background: linear-gradient(45deg, #f09433, #bc1888); border-radius: 50%; margin-right: 12px; }
+        :root { --insta-blue: #0095f6; --bg: #000; --card: #121212; --border: #262626; }
+        body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; padding: 20px; }
+        .post-box { max-width: 550px; margin: auto; background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+        .header { padding: 15px; display: flex; align-items: center; border-bottom: 1px solid var(--border); }
+        .avatar { width: 32px; height: 32px; background: linear-gradient(45deg, #f09433, #bc1888); border-radius: 50%; margin-right: 12px; }
         .content { padding: 20px; }
-        label { display: block; font-size: 11px; color: #8e8e8e; text-transform: uppercase; font-weight: 700; margin-bottom: 5px; }
-        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; }
-        button { width: 100%; background: var(--blue); color: #fff; border: none; padding: 10px; border-radius: 5px; font-weight: 700; cursor: pointer; }
-        .output-box { margin-top: 25px; border-top: 1px dotted var(--border); padding-top: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
-        th { text-align: left; color: #8e8e8e; padding: 10px; border-bottom: 1px solid var(--border); font-size: 12px; }
-        td { padding: 12px 10px; border-bottom: 1px solid #1a1a1a; font-family: monospace; }
-        .new-state { color: var(--blue); font-weight: bold; }
+        input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 12px; margin-bottom: 15px; border-radius: 5px; }
+        button { width: 100%; background: var(--insta-blue); color: #fff; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .result-table { margin-top: 20px; width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; color: #8e8e8e; border-bottom: 1px solid var(--border); padding: 10px; }
+        td { padding: 10px; border-bottom: 1px solid #1a1a1a; font-family: monospace; }
+        .state-tag { color: var(--insta-blue); }
     </style>
 </head>
 <body>
 
-<div class="post">
+<div class="post-box">
     <div class="header">
-        <div class="user-dot"></div>
-        <div style="font-size: 14px; font-weight: 600;">sai_naveen_059 <span style="font-weight: 400; color: #8e8e8e;">• Simulation</span></div>
+        <div class="avatar"></div>
+        <span style="font-weight: 600;">sai_naveen_059</span>
     </div>
     <div class="content">
-        <label>NFA Transitions (From,Sym,To; ...)</label>
-        <input type="text" id="nfaIn" value="q0,0,q0; q0,0,q1; q1,1,q1" placeholder="e.g., q0,0,q0; q0,0,q1">
+        <label style="font-size: 11px; color: #8e8e8e;">NFA Transitions (e.g. q0,0,q0; q0,0,q1)</label>
+        <input type="text" id="rawTrans" value="q0,0,q0; q0,0,q1; q1,1,q1">
         
-        <label>Alphabet (e.g., 0,1)</label>
-        <input type="text" id="alphabetIn" value="0,1">
+        <label style="font-size: 11px; color: #8e8e8e;">Alphabet (comma separated)</label>
+        <input type="text" id="alphabet" value="0,1">
 
-        <button onclick="runSubsetConstruction()">Generate DFA Table</button>
+        <button onclick="processNFA()">Run Complex Conversion</button>
 
-        <div class="output-box" id="output">
-            <p style="font-size: 14px; font-weight: 600;">DFA Transition Table</p>
-            <table>
-                <thead>
-                    <tr><th>DFA State</th><th>Input</th><th>Next State</th></tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>DFA State</th>
+                    <th>Input</th>
+                    <th>Next DFA State</th>
+                </tr>
+            </thead>
+            <tbody id="resBody"></tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    function runSubsetConstruction() {
-        const alphabet = document.getElementById('alphabetIn').value.split(',');
-        const transitions = document.getElementById('nfaIn').value.split(';');
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = "";
+function processNFA() {
+    const alpha = document.getElementById('alphabet').value.split(',');
+    const trans = document.getElementById('rawTrans').value.split(';');
+    const body = document.getElementById('resBody');
+    body.innerHTML = "";
 
-        // Core logic to group NFA targets for same inputs
-        let mapping = {};
-        transitions.forEach(t => {
-            const [from, sym, to] = t.trim().split(',');
-            const key = `${from}-${sym}`;
-            if (!mapping[key]) mapping[key] = new Set();
-            mapping[key].add(to);
+    // 1. Build NFA Map
+    let nfaMap = {};
+    trans.forEach(t => {
+        let [from, sym, to] = t.trim().split(',');
+        if (!nfaMap[from]) nfaMap[from] = {};
+        if (!nfaMap[from][sym]) nfaMap[from][sym] = [];
+        nfaMap[from][sym].push(to);
+    });
+
+    // 2. DFA Construction (Subset tracking)
+    let dfaStates = ["q0"]; // Starting state
+    let visited = new Set();
+    let queue = ["q0"];
+
+    while(queue.length > 0) {
+        let currentDFAState = queue.shift();
+        if(visited.has(currentDFAState)) continue;
+        visited.add(currentDFAState);
+
+        let nfaSubsets = currentDFAState.split('-');
+
+        alpha.forEach(symbol => {
+            let reach = new Set();
+            nfaSubsets.forEach(sub => {
+                if(nfaMap[sub] && nfaMap[sub][symbol]) {
+                    nfaMap[sub][symbol].forEach(target => reach.add(target));
+                }
+            });
+
+            if(reach.size > 0) {
+                let nextDFAState = Array.from(reach).sort().join('-');
+                
+                // Add to table
+                let row = `<tr>
+                    <td class="state-tag">{${currentDFAState}}</td>
+                    <td>${symbol}</td>
+                    <td class="state-tag">{${nextDFAState}}</td>
+                </tr>`;
+                body.innerHTML += row;
+
+                if(!visited.has(nextDFAState)) queue.push(nextDFAState);
+            }
         });
-
-        for (let key in mapping) {
-            const [state, sym] = key.split('-');
-            const targets = Array.from(mapping[key]).join(',');
-            const row = `<tr>
-                <td>{${state}}</td>
-                <td><span style="color:#ffcc00">${sym}</span></td>
-                <td class="new-state">{${targets}}</td>
-            </tr>`;
-            tbody.innerHTML += row;
-        }
     }
+}
 </script>
-
 </body>
 </html>
