@@ -1,127 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>sai_naveen_059 | Semantic Analyzer</title>
+    <meta charset="UTF-8">
+    <title>sai_naveen_059 | Profile</title>
     <style>
         :root {
-            --bg: #000000;
-            --card: #121212;
-            --border: #262626;
-            --insta-blue: #0095f6;
-            --insta-grad: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            --text: #fafafa;
-            --muted: #8e8e8e;
+            --bg: #000;
+            --insta-grad: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            --text: #fff;
         }
-
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, system-ui, sans-serif;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
             margin: 0;
         }
-
-        .profile-container {
-            width: 100%;
-            max-width: 380px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 15px;
-            padding: 40px 20px;
+        .profile-card {
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 300px;
         }
-
-        .story-ring {
-            width: 110px;
-            height: 110px;
+        .story-border {
+            width: 120px;
+            height: 120px;
             background: var(--insta-grad);
             border-radius: 50%;
-            margin: 0 auto 20px;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 3px;
+            align-items: center;
+            margin: 0 auto 20px;
         }
-
-        .profile-pic {
-            background: var(--bg);
-            width: 100%;
-            height: 100%;
+        .inner-circle {
+            width: 110px;
+            height: 110px;
+            background: black;
             border-radius: 50%;
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 36px;
-            font-weight: 700;
+            align-items: center;
+            font-size: 40px;
+            font-weight: bold;
         }
-
-        h1 { font-size: 22px; font-weight: 600; margin: 10px 0 5px; }
-        
-        .reg-no { 
-            color: var(--muted); 
-            font-size: 15px; 
-            margin-bottom: 20px;
-            font-family: 'Courier New', Courier, monospace;
-        }
-
-        .bio {
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 30px;
-            color: #efefef;
-        }
-
-        .btn-launch {
-            background-color: var(--insta-blue);
+        h1 { font-size: 24px; margin: 10px 0; }
+        p { color: #a8a8a8; font-size: 16px; margin-bottom: 30px; }
+        .btn {
+            background: #363636;
             color: white;
-            text-decoration: none;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 8px;
-            font-weight: 700;
-            font-size: 14px;
+            text-decoration: none;
+            font-weight: 600;
             display: block;
-            transition: transform 0.2s, opacity 0.2s;
+            margin-bottom: 10px;
         }
-
-        .btn-launch:hover {
-            opacity: 0.9;
-            transform: scale(0.98);
-        }
-
-        .footer-note {
-            margin-top: 15px;
-            font-size: 11px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .btn:hover { background: #474747; }
     </style>
 </head>
 <body>
-
-    <div class="profile-container">
-        <div class="story-ring">
-            <div class="profile-pic">SN</div>
+    <div class="profile-card">
+        <div class="story-border">
+            <div class="inner-circle">SN</div>
         </div>
-
-        <h1>sai_naveen_059</h1>
-        <div class="reg-no">RA2311003050059</div>
-
-        <p class="bio">
-            <b>Semantic Analysis Phase</b><br>
-            Type Checking • Scope Verification<br>
-            Compiler Design Laboratory
-        </p>
-
-        <a href="simulation.html" class="btn-launch">Run Semantic Check</a>
-        
-        <p class="footer-note">Phase 3: Validation</p>
+        <h1>Sai Naveen</h1>
+        <p>Registration No: 059</p>
+        <a href="#" class="btn">View TOC Projects</a>
+        <a href="#" class="btn">NFA to DFA Simulation</a>
     </div>
-
 </body>
 </html>
